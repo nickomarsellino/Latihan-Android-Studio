@@ -86,44 +86,44 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         holder.scheduleDateTxtV.setText(schedule.getDate());
 
 
-//        holder.layout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-//                builder.setTitle("Choose option");
-//                builder.setMessage("View or Delete Schedule ?");
-//
-//                builder.setPositiveButton("View Schedule", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                    }
-//                });
-//
-//                builder.setNeutralButton("Delete Shedule", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        ScheduleDBHelper dbHelper = new ScheduleDBHelper(mContext);
-//                        dbHelper.deleteSchedule(schedule.getId(), mContext);
-//
-//
-//                        mScheduleList.remove(position);
-//                        mRecyclerV.removeViewAt(position);
-//                        notifyItemRemoved(position);
-//                        notifyItemRangeChanged(position, mScheduleList.size());
-//                        notifyDataSetChanged();
-//                    }
-//                });
-//
-//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        dialogInterface.dismiss();
-//                    }
-//                });
-//                builder.create().show();
-//            }
-//        });
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Choose option");
+                builder.setMessage("View or Delete Schedule ?");
+
+                builder.setPositiveButton("View Schedule", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                builder.setNegativeButton("Delete Shedule", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ScheduleDBHelper dbHelper = new ScheduleDBHelper(mContext);
+                        dbHelper.deleteSchedule(schedule.getId(), mContext);
+
+
+                        mScheduleList.remove(position);
+                        mRecyclerV.removeViewAt(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, mScheduleList.size());
+                        notifyDataSetChanged();
+                    }
+                });
+
+                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
 
 
 

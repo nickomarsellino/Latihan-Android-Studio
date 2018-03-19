@@ -1,6 +1,7 @@
 package com.example.nickomarsellino.scheduling;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -96,6 +97,8 @@ public class Add_Schedule extends AppCompatActivity {
                 Schedule schedule = new Schedule(title, content, date);
                 dbHelper.saveNewSchedule(schedule);
                 Toast.makeText(this, "Input Sukses", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(Add_Schedule.this, Home_Page.class));
             }
         }
 

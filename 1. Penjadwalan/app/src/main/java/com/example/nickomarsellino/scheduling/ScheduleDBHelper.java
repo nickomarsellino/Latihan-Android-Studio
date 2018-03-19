@@ -61,7 +61,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
     }
 
 
-    public List<Schedule> schedulesList(String filter) {
+    public List<Schedule> schedulesList() {
         String query;
 
         query = "SELECT  * FROM " + TABLE_NAME;
@@ -110,7 +110,13 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
     }
 
 
+    public void deleteSchedule(long id, Context context) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        db.execSQL("DELETE FROM "+TABLE_NAME+" WHERE _id='"+id+"'");
+        Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+
+    }
 
 
 

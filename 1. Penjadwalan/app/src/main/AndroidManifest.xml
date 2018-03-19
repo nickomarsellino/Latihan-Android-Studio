@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Home_Page"></activity>
+        <activity android:name=".Home_Page" />
+        <activity android:name=".show_Detail_Schedule"></activity>
     </application>
 
 </manifest>

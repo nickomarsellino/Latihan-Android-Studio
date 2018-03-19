@@ -3,6 +3,7 @@ package com.example.nickomarsellino.scheduling;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,7 +97,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                 builder.setPositiveButton("View Schedule", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        goViewActivity(schedule.getId());
                     }
                 });
 
@@ -125,14 +126,18 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             }
         });
 
-
-
-
     }
 
     @Override
     public int getItemCount() {
         return mScheduleList.size();
+    }
+
+
+    private void goViewActivity(long personId){
+        Intent goToView = new Intent(mContext, show_Detail_Schedule.class);
+        goToView.putExtra("USER_ID", personId);
+        mContext.startActivity(goToView);
     }
 
 

@@ -131,15 +131,6 @@ public class Add_Schedule extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if(requestCode == REQ_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//
-//        }
-//    }
-
     ///////////////////////////////////////////////////////////////////
 
 
@@ -192,6 +183,11 @@ public class Add_Schedule extends AppCompatActivity {
                 Toast.makeText(this, "Input Sukses", Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(Add_Schedule.this, Home_Page.class));
+
+
+                NotificationGenerator.openActivityNotification(getApplicationContext(), title, date);
+
+
             }
         }
 

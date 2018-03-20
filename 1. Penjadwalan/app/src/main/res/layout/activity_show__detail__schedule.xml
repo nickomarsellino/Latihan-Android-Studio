@@ -109,6 +109,7 @@
                     android:layout_height="200dp"
                     android:layout_gravity="center"
                     android:src="@drawable/iconimage"
+                    android:id="@+id/detail_Image"
                     />
             </LinearLayout>
 

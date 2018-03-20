@@ -17,13 +17,14 @@ import java.util.List;
 
 public class ScheduleDBHelper extends SQLiteOpenHelper{
 
-    public static final String DATABASE_NAME = "schedule.db";
+    public static final String DATABASE_NAME = "schedules.db";
     private static final int DATABASE_VERSION = 1 ;
     public static final String TABLE_NAME = "Schedule";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_SCHEDULE_TITLE = "title";
     public static final String COLUMN_SCHEDULE_CONTENT = "content";
     public static final String COLUMN_SCHEDULE_DATE = "date";
+    public static final String COLUMN_SCHEDULE_IMAGE = "image";
 
 
     public ScheduleDBHelper(Context context) {
@@ -37,7 +38,8 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_SCHEDULE_TITLE + " TEXT NOT NULL, " +
                 COLUMN_SCHEDULE_CONTENT + " TEXT NOT NULL, " +
-                COLUMN_SCHEDULE_DATE+ " TEXT NOT NULL);"
+                COLUMN_SCHEDULE_DATE + " TEXT NOT NULL, " +
+                COLUMN_SCHEDULE_IMAGE+ " TEXT NOT NULL);"
         );
     }
 
@@ -54,6 +56,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
         values.put(COLUMN_SCHEDULE_TITLE, schedule.getTitle());
         values.put(COLUMN_SCHEDULE_CONTENT, schedule.getContent());
         values.put(COLUMN_SCHEDULE_DATE, schedule.getDate());
+        values.put(COLUMN_SCHEDULE_IMAGE, schedule.getImage());
 
         // insert
         sqLiteDatabase.insert(TABLE_NAME,null, values);
@@ -80,6 +83,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
                 schedule.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_TITLE)));
                 schedule.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_CONTENT)));
                 schedule.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_DATE)));
+                schedule.setImage(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_IMAGE)));
                 ScheduleLinkedList.add(schedule);
             } while (cursor.moveToNext());
         }
@@ -103,6 +107,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
             receivedSchedule.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_TITLE)));
             receivedSchedule.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_CONTENT)));
             receivedSchedule.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_DATE)));
+            receivedSchedule.setImage(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_IMAGE)));
         }
 
 

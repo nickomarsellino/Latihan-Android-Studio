@@ -10,16 +10,18 @@ public class Schedule {
     private String title;
     private String content;
     private String date;
+    private String image;
 
 
     public Schedule(){
 
     }
 
-    public Schedule(String title, String content, String date) {
+    public Schedule(String title, String content, String date, String image) {
         this.title = title;
         this.content = content;
         this.date = date;
+        this.image = image;
     }
 
     public void setId(long id) {
@@ -38,6 +40,10 @@ public class Schedule {
         this.date = date;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public long getId() {
         return id;
     }
@@ -52,5 +58,9 @@ public class Schedule {
 
     public String getDate() {
         return date;
+    }
+
+    public String getImage() {
+        return image;
     }
 }

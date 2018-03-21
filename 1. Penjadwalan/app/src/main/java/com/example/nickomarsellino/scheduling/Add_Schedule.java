@@ -19,10 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +33,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class Add_Schedule extends AppCompatActivity {
 
+    //untuk binding jadi
+    @BindView(R.id.container_gallery)
+    LinearLayout mContainerGallery;
 
     //Inisialisasi Atribut input
     EditText titleData, contentData;
@@ -57,23 +65,29 @@ public class Add_Schedule extends AppCompatActivity {
 
     //Untuk Notifikasi
     public ScheduleClient scheduleClient;
-///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+
+    //String Builder Supay bisa nyimpan path gambar supaya banyak
+    StringBuilder sbPicture;
+    //////////////////////////////////////////////////////
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add__schedule);
+        ButterKnife.bind(this);
 
 
         //Inisialisasi Atribut input
-        titleData = (EditText) findViewById(R.id.input_title);
-        contentData = (EditText) findViewById(R.id.input_content);
+        titleData = findViewById(R.id.input_title);
+        contentData = findViewById(R.id.input_content);
         saveButton = (Button) findViewById(R.id.button_save);
         loadImage = (FloatingActionButton) findViewById(R.id.fab_create_image);
         imageView = (ImageView) findViewById(R.id.showImageSelected);
         ///////////////////////////////////////////////////////////
 
-
+        sbPicture = new StringBuilder();
 
         //Jika Tombol Add Image Di Tekan
         loadImage.setOnClickListener(new View.OnClickListener() {
@@ -153,13 +167,26 @@ public class Add_Schedule extends AppCompatActivity {
         }
     }
 
-    private void setImageViews(String uriPath,String realPath) {
-
-
+    private void setImageViews(String uriPath, String realPath) {
         Uri uriFromPath = Uri.fromFile(new File(realPath));
 
-        imageView.setImageURI(uriFromPath);
+//        imageView.setImageURI(uriFromPath);
 
+
+        //supaya dia bisa generate lebih dari 1 gambar
+        ImageView ivPicture = new ImageView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, 600);
+        ivPicture.setLayoutParams(params);
+        ivPicture.setImageURI(uriFromPath);
+        mContainerGallery.addView(ivPicture);
+
+
+
+        if (sbPicture.toString().equals("")) {
+            sbPicture.append(realPath);
+        } else {
+            sbPicture.append(",").append(realPath);
+        }
 
     }
 
@@ -170,7 +197,9 @@ public class Add_Schedule extends AppCompatActivity {
             String title = titleData.getText().toString().trim();
             String content = contentData.getText().toString().trim();
             String date = text_Calendar.getText().toString().trim();
-            String image = realPath;
+
+            //Untuk masukin path gambar
+            String image = sbPicture.toString();
 
             dbHelper = new ScheduleDBHelper(this);
 
@@ -178,8 +207,13 @@ public class Add_Schedule extends AppCompatActivity {
                 Toast.makeText(this, "You must enter the data", Toast.LENGTH_SHORT).show();
             }
             else{
-                Schedule schedule = new Schedule(title, content, date, image);
+
+                ScheduleImage scheduleImage = new ScheduleImage(image);
+                Schedule schedule = new Schedule(title, content, date);
+
                 dbHelper.saveNewSchedule(schedule);
+                dbHelper.saveNewScheduleImage(scheduleImage);
+
                 Toast.makeText(this, "Input Sukses", Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(Add_Schedule.this, Home_Page.class));

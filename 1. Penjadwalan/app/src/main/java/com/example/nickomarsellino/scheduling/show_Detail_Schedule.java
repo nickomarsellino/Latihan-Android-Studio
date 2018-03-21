@@ -48,10 +48,10 @@ public class show_Detail_Schedule extends AppCompatActivity {
         content.setText(schedule.getContent());
         date.setText(schedule.getDate());
 
-
-        Uri uriFromPath = Uri.fromFile(new File(schedule.getImage()));
-
-        image.setImageURI(uriFromPath);
+//
+//        Uri uriFromPath = Uri.fromFile(new File(schedule.getImage()));
+//
+//        image.setImageURI(uriFromPath);
 
     }
 }

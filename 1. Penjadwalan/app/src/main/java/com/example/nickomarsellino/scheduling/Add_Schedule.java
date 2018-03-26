@@ -3,23 +3,18 @@ package com.example.nickomarsellino.scheduling;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,9 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,15 +38,17 @@ public class Add_Schedule extends AppCompatActivity {
     @BindView(R.id.container_gallery)
     LinearLayout mContainerGallery;
 
+
+
     //Inisialisasi Atribut input
     EditText titleData, contentData;
     Button saveButton;
     FloatingActionButton loadImage;
-    ImageView imageView;
     /////////////////////////////////////////////////////
 
     private final static int REQ_PERMISSION = 1;
     String realPath;
+    private Context mContext;
 
     //Untuk Database nya
     private ScheduleDBHelper dbHelper;
@@ -72,6 +70,15 @@ public class Add_Schedule extends AppCompatActivity {
     //////////////////////////////////////////////////////
 
 
+    //Supaya bisa simpen gambar lebih dari 1
+    private List<String> imgs = new ArrayList<String>();
+    //
+
+
+    //Create Button Delete lebih dari satu
+    private List<Button> delete_imgs = new ArrayList<Button>();
+    //
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,12 +86,14 @@ public class Add_Schedule extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
+
+
+
         //Inisialisasi Atribut input
         titleData = findViewById(R.id.input_title);
         contentData = findViewById(R.id.input_content);
         saveButton = (Button) findViewById(R.id.button_save);
         loadImage = (FloatingActionButton) findViewById(R.id.fab_create_image);
-        imageView = (ImageView) findViewById(R.id.showImageSelected);
         ///////////////////////////////////////////////////////////
 
         sbPicture = new StringBuilder();
@@ -163,30 +172,68 @@ public class Add_Schedule extends AppCompatActivity {
             else
                 realPath = RealPathUtil.getRealPathFromURI_API19(this, data.getData());
 
-            setImageViews(data.getData().getPath(),realPath);
+            setImageViews(realPath);
         }
     }
 
-    private void setImageViews(String uriPath, String realPath) {
-        Uri uriFromPath = Uri.fromFile(new File(realPath));
+    private void setImageViews(final String realPath) {
+        final Uri uriFromPath = Uri.fromFile(new File(realPath));
 
 //        imageView.setImageURI(uriFromPath);
 
 
         //supaya dia bisa generate lebih dari 1 gambar
-        ImageView ivPicture = new ImageView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, 600);
+        final ImageView ivPicture = new ImageView(this);
+
+
+
+        final Button buttonImg = new Button(this);
+        buttonImg.setText("Delete Image");
+
+        final LinearLayout ContainerContent = new LinearLayout(this);
+        ContainerContent.setVerticalGravity(1);
+
+
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, 400);
+        LinearLayout.LayoutParams cancel = new LinearLayout.LayoutParams(600, 130);
+
+
         ivPicture.setLayoutParams(params);
         ivPicture.setImageURI(uriFromPath);
-        mContainerGallery.addView(ivPicture);
+        buttonImg.setLayoutParams(cancel);
 
 
+        ContainerContent.addView(buttonImg);
+        ContainerContent.addView(ivPicture);
 
-        if (sbPicture.toString().equals("")) {
-            sbPicture.append(realPath);
-        } else {
-            sbPicture.append(",").append(realPath);
-        }
+        mContainerGallery.addView(ContainerContent);
+
+
+        //Pada saat "Delete Image" di tekan
+        buttonImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Iterator<String> iterator = imgs.iterator();
+                while(iterator.hasNext())
+                {
+                    String value = iterator.next();
+                    if (realPath.equals(value))
+                    {
+                        ContainerContent.removeAllViews();
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+
+        });
+
+
+        //Nyimpen Path Gambarnya ke image databasenya
+        imgs.add(realPath);
+        delete_imgs.add(buttonImg);
 
     }
 
@@ -198,8 +245,6 @@ public class Add_Schedule extends AppCompatActivity {
             String content = contentData.getText().toString().trim();
             String date = text_Calendar.getText().toString().trim();
 
-            //Untuk masukin path gambar
-            String image = sbPicture.toString();
 
             dbHelper = new ScheduleDBHelper(this);
 
@@ -208,11 +253,20 @@ public class Add_Schedule extends AppCompatActivity {
             }
             else{
 
-                ScheduleImage scheduleImage = new ScheduleImage(image);
-                Schedule schedule = new Schedule(title, content, date);
+                Schedule schedule = new Schedule(title, content, date, imgs);
 
-                dbHelper.saveNewSchedule(schedule);
-                dbHelper.saveNewScheduleImage(scheduleImage);
+                long idSchedule = dbHelper.saveNewSchedule(schedule);
+
+                //foreach untuk nyimpen datanya sesuai banyak yang dimasukin
+                    for(String img:schedule.getImages()){
+
+                        ScheduleImage scheduleImage = new ScheduleImage();
+                        scheduleImage.setIdSchedule(idSchedule);
+                        scheduleImage.setImage(img);
+
+                        dbHelper.saveNewScheduleImage(scheduleImage);
+                    }
+                //
 
                 Toast.makeText(this, "Input Sukses", Toast.LENGTH_SHORT).show();
 

@@ -14,6 +14,8 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.List;
 
+import static android.webkit.WebSettings.PluginState.ON;
+
 
 public class ScheduleDBHelper extends SQLiteOpenHelper{
 
@@ -33,6 +35,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
     //Tabel si Image
     public static final String TABLE_IMAGE_NAME= "Image";
     public static final String COLUMN_IMAGE_ID = "_id";
+    public static final String SCHEDULE_ID = "schedule_id";
     public static final String COLUMN_IMAGE_PATH = "path";
 
 
@@ -46,6 +49,8 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
+
+
         //Ini Untuk Schedule Table
         sqLiteDatabase.execSQL(" CREATE TABLE " + TABLE_SCHEDULE_NAME + " (" +
                 COLUMN_SCHEDULE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -54,11 +59,14 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
                 COLUMN_SCHEDULE_DATE+ " TEXT NOT NULL);"
         );
 
-        //Ini Untuk Image Table
-        sqLiteDatabase.execSQL(" CREATE TABLE " + TABLE_IMAGE_NAME + " (" +
+        String query = " CREATE TABLE " + TABLE_IMAGE_NAME + " (" +
                 COLUMN_IMAGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_IMAGE_PATH+ " TEXT NOT NULL);"
-        );
+                SCHEDULE_ID + " INTEGER," +
+                COLUMN_IMAGE_PATH+ " TEXT NOT NULL," +
+                "FOREIGN KEY (" + SCHEDULE_ID + ") REFERENCES " + TABLE_SCHEDULE_NAME + "(" + COLUMN_SCHEDULE_ID + "))";
+        //Ini Untuk Image Table
+        sqLiteDatabase.execSQL(query);
+
     }
 
     @Override
@@ -71,7 +79,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
         this.onCreate(sqLiteDatabase);
     }
 
-    public void saveNewSchedule(Schedule schedule) {
+    public long saveNewSchedule(Schedule schedule) {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -80,14 +88,16 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
         values.put(COLUMN_SCHEDULE_DATE, schedule.getDate());
 
         // insert
-        sqLiteDatabase.insert(TABLE_SCHEDULE_NAME,null, values);
+        long rowId = sqLiteDatabase.insert(TABLE_SCHEDULE_NAME,null, values);
         sqLiteDatabase.close();
+        return rowId;
     }
 
     public void saveNewScheduleImage(ScheduleImage scheduleImage){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_IMAGE_PATH, scheduleImage.getImage());
+        values.put(SCHEDULE_ID, scheduleImage.getIdSchedule());
 
         // insert
         sqLiteDatabase.insert(TABLE_IMAGE_NAME,null, values);
@@ -150,9 +160,19 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("DELETE FROM "+TABLE_SCHEDULE_NAME+" WHERE _id='"+id+"'");
+        db.execSQL("DELETE FROM "+TABLE_IMAGE_NAME+" WHERE schedule_id='"+id+"'");
+
         Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
 
     }
 
+    public void deleteImageView(long id, Context context) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DELETE FROM "+TABLE_IMAGE_NAME+" WHERE _id+='"+id+"'");
+
+        Toast.makeText(context, "Deleted successfully.", Toast.LENGTH_SHORT).show();
+
+    }
 
 }

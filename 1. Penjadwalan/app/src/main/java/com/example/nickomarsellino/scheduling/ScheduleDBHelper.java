@@ -11,10 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import static android.webkit.WebSettings.PluginState.ON;
 
 
 public class ScheduleDBHelper extends SQLiteOpenHelper{
@@ -140,20 +139,59 @@ public class ScheduleDBHelper extends SQLiteOpenHelper{
     public Schedule getSchedule(long id){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String query = "SELECT  * FROM " + TABLE_SCHEDULE_NAME + " WHERE _id="+ id;
+
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
 
         Schedule receivedSchedule = new Schedule();
+
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
 
             receivedSchedule.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_TITLE)));
             receivedSchedule.setContent(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_CONTENT)));
             receivedSchedule.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_SCHEDULE_DATE)));
-        }
 
+        }
 
         return receivedSchedule;
     }
+
+
+    public List<ScheduleImage> getScheduleImage(long id){
+
+        List<ScheduleImage> scheduleImages = new ArrayList<>();
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String queryImage = "SELECT path FROM " + TABLE_IMAGE_NAME + " WHERE schedule_id="+ id;
+
+        Cursor cursorImage = sqLiteDatabase.rawQuery(queryImage, null);
+
+
+
+        if(cursorImage.getCount() > 0) {
+
+            cursorImage.moveToFirst();
+            for(int i=0; i<cursorImage.getCount(); i++){
+
+                ScheduleImage receivedImage = new ScheduleImage();
+                receivedImage.setImage(cursorImage.getString(cursorImage.getColumnIndex(COLUMN_IMAGE_PATH)));
+                scheduleImages.add(receivedImage);
+
+                cursorImage.moveToNext();
+            }
+
+//            cursorImage.moveToFirst();
+//
+//            ScheduleImage receivedImage = new ScheduleImage();
+//
+//            receivedImage.setImage(cursorImage.getString(cursorImage.getColumnIndex(COLUMN_IMAGE_PATH)));
+//
+//            scheduleImages.add(receivedImage);
+        }
+
+        return scheduleImages;
+    }
+
 
 
     public void deleteSchedule(long id, Context context) {

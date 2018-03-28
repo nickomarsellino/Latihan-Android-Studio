@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -186,17 +187,24 @@ public class Add_Schedule extends AppCompatActivity {
         final ImageView ivPicture = new ImageView(this);
 
 
-
         final Button buttonImg = new Button(this);
         buttonImg.setText("Delete Image");
 
+
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        param.setMargins(0, 0, 0, 150);
+
         final LinearLayout ContainerContent = new LinearLayout(this);
-        ContainerContent.setVerticalGravity(1);
+        ContainerContent.setOrientation(LinearLayout.VERTICAL);
 
 
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(600, 400);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(800, 500);
+        params.gravity = Gravity.CENTER;
+
         LinearLayout.LayoutParams cancel = new LinearLayout.LayoutParams(600, 130);
+        cancel.gravity = Gravity.CENTER;
 
 
         ivPicture.setLayoutParams(params);
@@ -207,7 +215,7 @@ public class Add_Schedule extends AppCompatActivity {
         ContainerContent.addView(buttonImg);
         ContainerContent.addView(ivPicture);
 
-        mContainerGallery.addView(ContainerContent);
+        mContainerGallery.addView(ContainerContent, param);
 
 
         //Pada saat "Delete Image" di tekan

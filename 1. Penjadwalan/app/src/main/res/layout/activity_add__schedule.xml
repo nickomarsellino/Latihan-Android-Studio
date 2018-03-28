@@ -85,10 +85,6 @@
                     android:textStyle="italic"
                     />
 
-                <ScrollView
-                    android:scrollbars="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:id="@+id/container_gallery"
                         android:orientation="vertical"
@@ -99,15 +95,8 @@
                         android:gravity="center"
                         >
                     </LinearLayout>
-                </ScrollView>
 
-                <ImageView
-                    android:layout_width="300dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/iconimage"
-                    android:id="@+id/showImageSelected"
-                    android:layout_marginBottom="80dp" />
+
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 

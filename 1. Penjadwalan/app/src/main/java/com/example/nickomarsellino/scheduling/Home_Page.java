@@ -1,7 +1,9 @@
 package com.example.nickomarsellino.scheduling;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,5 +51,28 @@ public class Home_Page extends AppCompatActivity {
         dbHelper = new ScheduleDBHelper(this);
         adapter = new ScheduleAdapter(dbHelper.schedulesList(), this, mRecyclerView);
         mRecyclerView.setAdapter(adapter);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder adbuilder = new AlertDialog.Builder(Home_Page.this);
+        adbuilder.setMessage("Do You Really Want To Exit ?")
+                .setCancelable(false)
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setTitle("WAIT");
+        adbuilder.show();
     }
 }
